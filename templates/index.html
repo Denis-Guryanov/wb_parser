@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildberries Аналитика</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Аналитика товаров Wildberries</h1>
+    
+    <!-- Информация о сессии -->
+    <section id="session-info">
+        <div class="session-controls">
+            <span id="sessionInfo" class="session-info">Текущая сессия: Нет</span>
+            <button id="newSession" class="btn-secondary">Новая сессия</button>
+            <button id="clearSession" class="btn-danger">Очистить сессию</button>
+        </div>
+        <div id="sessionResult" class="result"></div>
+    </section>
+    
+    <!-- Секция парсинга -->
+    <section id="parsing">
+        <h2>Парсинг товаров</h2>
+        <div class="parsing-forms">
+            <div class="form-group">
+                <h3>Парсинг конкретного товара</h3>
+                <input type="url" id="productUrl" placeholder="Введите URL товара с Wildberries" />
+                <button id="parseProduct">Спарсить товар</button>
+                <div id="productResult" class="result"></div>
+            </div>
+            
+            <div class="form-group">
+                <h3>Парсинг по поисковому запросу</h3>
+                <input type="text" id="searchQuery" placeholder="Введите поисковый запрос" />
+                <button id="parseSearch">Найти товары</button>
+                <div id="searchResult" class="result"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция фильтров -->
+    <section id="filters">
+        <h2>Фильтры</h2>
+        <label>Цена: <input type="range" id="priceRange" min="0" max="10000" step="100"><span id="priceValue"></span></label>
+        <label>Минимальный рейтинг: <input type="number" id="minRating" min="0" max="5" step="0.1" value="0"></label>
+        <label>Мин. отзывов: <input type="number" id="minReviews" min="0" value="0"></label>
+        <button id="resetFilters">Сбросить фильтры</button>
+    </section>
+    
+    <!-- Секция таблицы -->
+    <section>
+        <h2>Список товаров <span id="productCount" class="product-count">(0 товаров)</span></h2>
+        <table id="productsTable">
+            <thead>
+                <tr>
+                    <th data-sort="name">Название</th>
+                    <th>Фото</th>
+                    <th data-sort="price">Цена</th>
+                    <th data-sort="discounted_price">Цена со скидкой</th>
+                    <th data-sort="rating">Рейтинг</th>
+                    <th data-sort="reviews_count">Отзывы</th>
+                    <th>Ссылка</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+    
+    <!-- Секция графиков -->
+    <section id="charts">
+        <h2>Графики</h2>
+        <canvas id="priceHistogram" width="400" height="200"></canvas>
+        <canvas id="discountVsRating" width="400" height="200"></canvas>
+    </section>
+    <script src="/static/app.js"></script>
+</body>
+</html> 
