@@ -43,7 +43,20 @@
     <!-- Секция фильтров -->
     <section id="filters">
         <h2>Фильтры</h2>
-        <label>Цена: <input type="range" id="priceRange" min="0" max="10000" step="100"><span id="priceValue"></span></label>
+        <div class="price-slider-label" id="priceSliderBlock">
+            Цена:
+            <div class="slider-container">
+                <label for="minPriceRange" class="slider-caption">Мин. цена</label>
+                <span class="price-tooltip" id="minPriceTooltip">0</span>
+                <input type="range" id="minPriceRange" min="0" max="10000" step="100" value="0" class="price-slider">
+            </div>
+            —
+            <div class="slider-container">
+                <label for="maxPriceRange" class="slider-caption">Макс. цена</label>
+                <input type="range" id="maxPriceRange" min="0" max="10000" step="100" value="10000" class="price-slider">
+            </div>
+            <span>₽</span>
+        </div>
         <label>Минимальный рейтинг: <input type="number" id="minRating" min="0" max="5" step="0.1" value="0"></label>
         <label>Мин. отзывов: <input type="number" id="minReviews" min="0" value="0"></label>
         <button id="resetFilters">Сбросить фильтры</button>

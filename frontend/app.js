@@ -30,6 +30,7 @@ async function fetchProducts(filters = {}) {
         params.append('session_id', currentSessionId);
     }
     if (filters.min_price) params.append('min_price', filters.min_price);
+    if (filters.max_price) params.append('max_price', filters.max_price);
     if (filters.min_rating) params.append('min_rating', filters.min_rating);
     if (filters.min_reviews_count) params.append('min_reviews_count', filters.min_reviews_count);
     
@@ -200,12 +201,35 @@ function renderTable() {
     });
 }
 
+function updateSliderTooltip(sliderId, tooltipId, captionId, captionPrefix) {
+    const slider = document.getElementById(sliderId);
+    const tooltip = document.getElementById(tooltipId);
+    const caption = document.getElementById(captionId);
+    const min = +slider.min;
+    const max = +slider.max;
+    const val = +slider.value;
+    tooltip.textContent = val;
+    // Позиция бегунка в процентах
+    const percent = (val - min) / (max - min);
+    tooltip.style.left = `calc(${percent * 100}% )`;
+    if (caption) {
+        caption.textContent = `${captionPrefix}: ${val}`;
+    }
+}
+
 function applyFilters() {
-    const minPrice = +document.getElementById('priceRange').value;
+    const minPrice = +document.getElementById('minPriceRange').value;
+    const maxPrice = +document.getElementById('maxPriceRange').value;
     const minRating = +document.getElementById('minRating').value;
     const minReviews = +document.getElementById('minReviews').value;
+    const realMin = Math.min(minPrice, maxPrice);
+    const realMax = Math.max(minPrice, maxPrice);
+    // Обновляем tooltips и подписи
+    updateSliderTooltip('minPriceRange', 'minPriceTooltip', 'minPriceCaption', 'Мин. цена');
+    updateSliderTooltip('maxPriceRange', 'maxPriceTooltip', 'maxPriceCaption', 'Макс. цена');
     filteredProducts = products.filter(p =>
-        p.discounted_price >= minPrice &&
+        p.discounted_price >= realMin &&
+        p.discounted_price <= realMax &&
         p.rating >= minRating &&
         p.reviews_count >= minReviews
     );
@@ -215,17 +239,25 @@ function applyFilters() {
 }
 
 function updatePriceSlider() {
-    if (products.length === 0) return;
-    
+    const priceSliderBlock = document.getElementById('priceSliderBlock');
+    if (products.length === 0) {
+        priceSliderBlock.style.display = 'none';
+        return;
+    }
+    priceSliderBlock.style.display = '';
     const prices = products.map(p => p.discounted_price);
     const min = Math.min(...prices, 0);
     const max = Math.max(...prices, 10000);
-    const slider = document.getElementById('priceRange');
-    slider.min = min;
-    slider.max = max;
-    if (+slider.value < min) slider.value = min;
-    if (+slider.value > max) slider.value = min;
-    document.getElementById('priceValue').textContent = slider.value;
+    const minSlider = document.getElementById('minPriceRange');
+    const maxSlider = document.getElementById('maxPriceRange');
+    minSlider.min = min;
+    minSlider.max = max;
+    maxSlider.min = min;
+    maxSlider.max = max;
+    if (+minSlider.value < min) minSlider.value = min;
+    if (+maxSlider.value > max) maxSlider.value = max;
+    updateSliderTooltip('minPriceRange', 'minPriceTooltip', 'minPriceCaption', 'Мин. цена');
+    updateSliderTooltip('maxPriceRange', 'maxPriceTooltip', 'maxPriceCaption', 'Макс. цена');
 }
 
 // Обработчики событий для парсинга
@@ -252,14 +284,17 @@ document.getElementById('clearSession').addEventListener('click', clearSession);
 document.getElementById('newSession').addEventListener('click', createNewSession);
 
 // Обработчики событий для фильтров
-document.getElementById('priceRange').addEventListener('input', e => {
-    document.getElementById('priceValue').textContent = e.target.value;
-    applyFilters();
-});
+document.getElementById('minPriceRange').addEventListener('input', applyFilters);
+document.getElementById('maxPriceRange').addEventListener('input', applyFilters);
 document.getElementById('minRating').addEventListener('input', applyFilters);
 document.getElementById('minReviews').addEventListener('input', applyFilters);
 document.getElementById('resetFilters').addEventListener('click', () => {
-    document.getElementById('priceRange').value = document.getElementById('priceRange').min;
+    const minSlider = document.getElementById('minPriceRange');
+    const maxSlider = document.getElementById('maxPriceRange');
+    minSlider.value = minSlider.min;
+    maxSlider.value = maxSlider.max;
+    updateSliderTooltip('minPriceRange', 'minPriceTooltip', 'minPriceCaption', 'Мин. цена');
+    updateSliderTooltip('maxPriceRange', 'maxPriceTooltip', 'maxPriceCaption', 'Макс. цена');
     document.getElementById('minRating').value = 0;
     document.getElementById('minReviews').value = 0;
     applyFilters();

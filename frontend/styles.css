@@ -254,4 +254,38 @@ canvas {
     th, td {
         padding: 8px;
     }
+}
+
+.slider-container {
+    position: relative;
+    display: inline-block;
+    width: 180px;
+    margin: 0 5px;
+}
+
+.price-tooltip {
+    position: absolute;
+    left: 50%;
+    top: -30px;
+    transform: translateX(-50%);
+    background: #4e73df;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 2;
+    transition: left 0.1s;
+}
+
+.price-slider-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.price-slider {
+    width: 100%;
 } 

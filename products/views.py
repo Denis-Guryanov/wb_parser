@@ -21,6 +21,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         queryset = Product.objects.all()
         session_id = self.request.query_params.get('session_id')
         min_price = self.request.query_params.get('min_price')
+        max_price = self.request.query_params.get('max_price')
         min_rating = self.request.query_params.get('min_rating')
         min_reviews = self.request.query_params.get('min_reviews_count')
 
@@ -34,6 +35,8 @@ class ProductViewSet(viewsets.ModelViewSet):
         
         if min_price:
             queryset = queryset.filter(discounted_price__gte=min_price)
+        if max_price:
+            queryset = queryset.filter(discounted_price__lte=max_price)
         if min_rating:
             queryset = queryset.filter(rating__gte=min_rating)
         if min_reviews:
